@@ -1,0 +1,13 @@
+export function getTicketCategories() {
+  const result = fetch(`http://localhost:8080/ticketCategories`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      return [...data];
+    });
+  return result;
+}

@@ -1,4 +1,5 @@
 // import './src/mocks/handlers';
+import { createOrderItem } from './src/components/createOrderItem';
 import {useStyle} from '/src/components/styles';
 import {kebabCase, addPurchase} from '/src/utils';
 
@@ -32,19 +33,31 @@ function getHomePageTemplate() {
 
 function getOrdersPageTemplate() {
   return `
-    <div id="content">
-    <h1 class="text-2xl mb-4 mt-8 text-center">Purchased Tickets</h1>
-      <div class = "purchases m1-6 mr-6">
-        <div class"bg-white px-4 py-3 gap-x-4 flex font-bold">
-          <span >Name</span>
-          <span class="flex-1">Nr Tickets</span>
-          <span class="flex-1">Category</span>
-          <span class="flex-1"md:flex">Date</span>
-          <span>Price</span>
-          <span class="w-28 sm:w-8"></span>
+  <div id="content">
+      <h1 class="text-2xl mb-5 mt-8 text-center" id="purchased-title">Purchased Tickets</h1>
+      <div class="purchases m-6 mr-6" id="purchases">
+        <div class="bg-white px-4 py-3 gap-x-4 flex font-bold">
+          <div class="flex-1">
+            <span>Order ID</span>
+          </div>
+          <div class="flex-1">
+            <span>Name</span>
+          </div>
+          <div class="flex-1">
+            <span>Nr Tickets</span>
+          </div>
+          <div class="flex-1">
+            <span>Category</span>
+          </div>
+          <div class="flex-1 md:flex">
+            <span>Date</span>
+          </div>
+          <div>
+            <span>Price</span>
+          </div>
+          <div class="w-28 sm:w-8"></div>
         </div>
-        <div id="purchases-content">
-        </div>
+        <div id="purchases-content"></div>
       </div>
     </div>
   `;
@@ -93,6 +106,11 @@ function renderHomePage() {
   console.log('data', data);
   addEvents(data);
    });
+
+  console.log('function', fetchOrders());
+  fetchOrders().then((data) => {
+  console.log('data', data);
+   });
 }
 
 
@@ -107,7 +125,6 @@ async function fetchTicketEvents(){
 async function fetchOrders(){
   //java api
   const response = await fetch('http://localhost:8080/allOrders');
-  //const response = await fetch('https://localhost:7068/api/Event/GetAll');
   const data = await response.json();
   return data;
 }
@@ -275,7 +292,6 @@ return eventDiv;
 
 
 
-
 const handleAddToCart = (title, eventID, input, addToCart) => {
   const ticketCategoryID = parseInt(document.querySelector(`.${kebabCase(title)}-ticket-type`).value);
   const numberOfTickets = parseInt(input.value);
@@ -318,19 +334,18 @@ function renderOrdersPage(categories) {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = getOrdersPageTemplate();
 
-  const purchaseDiv = document.querySelector('.purchases');
   const purchasesContent = document.getElementById('purchases-content');
-  if(purchaseDiv){
-    fetchOrders().then((orders) => {
-      if(orders.length()){
-        orders.forEach((order)=>{
-          const newOrder = createOrderItem(categories, order);
-          purchasesContent.appendChild(newOrder);
-        });
-        purchaseDiv.appendChild(purchasesContent);
-      }
-    })
-  }
+  fetchOrders().then((orders) => {
+    if (orders.length) {
+      orders.forEach((order) => {
+        const ticketCategory = order.ticketCategory; // Make sure you have access to the ticketCategory object here
+        const newOrder = createOrderItem(ticketCategory, order); // Pass ticketCategory as an argument
+        purchasesContent.appendChild(newOrder);
+      });
+    } else {
+      purchasesContent.innerHTML = 'No orders found.';
+    }
+  });
 }
 
 // Render content based on URL
