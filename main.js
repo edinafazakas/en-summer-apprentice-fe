@@ -1,8 +1,8 @@
 // import './src/mocks/handlers';
 import { createOrderItem } from './src/components/createOrderItem';
-import {useStyle} from '/src/components/styles';
-import {kebabCase, addPurchase} from '/src/utils';
-
+import { useStyle } from '/src/components/styles';
+import { kebabCase, addPurchase } from '/src/utils';
+import { addLoader, removeLoader } from './src/components/loader';
 const imgUrls = [
   'https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?cs=srgb&dl=pexels-wendy-wei-1190298.jpg&fm=jpg',
   'https://images.mlssoccer.com/image/private/t_q-best/prd-league/nkiijghg8wni2aodsyvb.jpg',
@@ -100,21 +100,20 @@ function setupInitialPage() {
 function renderHomePage() {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = getHomePageTemplate();
-
   console.log('function', fetchTicketEvents());
-  fetchTicketEvents().then((data) => {
-  console.log('data', data);
-  addEvents(data);
-   });
 
-  console.log('function', fetchOrders());
-  fetchOrders().then((data) => {
-  console.log('data', data);
-   });
+  addLoader();
+  fetchTicketEvents().then((data) => {
+    setTimeout(() =>{
+      removeLoader();
+    }, 300);
+    console.log('data', data);
+    addEvents(data);
+  });
 }
 
 
-async function fetchTicketEvents(){
+async function fetchTicketEvents() {
   //java api
   const response = await fetch('http://localhost:8080/getEvents');
   //const response = await fetch('https://localhost:7068/api/Event/GetAll');
@@ -122,7 +121,7 @@ async function fetchTicketEvents(){
   return data;
 }
 
-async function fetchOrders(){
+async function fetchOrders() {
   //java api
   const response = await fetch('http://localhost:8080/allOrders');
   const data = await response.json();
@@ -131,10 +130,10 @@ async function fetchOrders(){
 
 
 
-const addEvents = (events) =>{
+const addEvents = (events) => {
   const eventDiv = document.querySelector('.events');
   eventDiv.innerHTML = 'No events';
-  if(events.length){
+  if (events.length) {
     eventDiv.innerHTML = '';
     events.forEach(event => {
       eventDiv.appendChild(createEvent(event));
@@ -144,17 +143,17 @@ const addEvents = (events) =>{
 
 
 
-const createEvent = (eventData) =>{
+const createEvent = (eventData) => {
   const title = kebabCase(eventData.eventType.name);
   const eventElement = createEventElement(eventData, title);
   return eventElement;
- };
+};
 
- let currentImgIndex = 0;
+let currentImgIndex = 0;
 
 
 
- const createEventElement = (eventData, title) => {
+const createEventElement = (eventData, title) => {
   const { eventID, description, name, ticketCategories } = eventData;
   const imgURL = imgUrls[currentImgIndex % imgUrls.length];
   currentImgIndex++;
@@ -183,111 +182,111 @@ const createEvent = (eventData) =>{
   `;
   eventDiv.innerHTML = contentMarkup;
 
-//Create ticket type selection and quantity input
-const actions = document.createElement('div');
-actions.classList.add(...actionsWrapperClasses);
+  //Create ticket type selection and quantity input
+  const actions = document.createElement('div');
+  actions.classList.add(...actionsWrapperClasses);
 
-const categoriesOptions = ticketCategories.map(
-  (ticketCategory) =>
-  `<option value=${ticketCategory.id}>${ticketCategory.description}</option>`
-);
+  const categoriesOptions = ticketCategories.map(
+    (ticketCategory) =>
+      `<option value=${ticketCategory.id}>${ticketCategory.description}</option>`
+  );
 
-const ticketTypeMarkup = `
+  const ticketTypeMarkup = `
   <h2 class="ticket-type-text text-lg font-bold mb-2">Choose Ticket Type:</h2>
   <select id="ticketType" name="ticketType" class="select ${title}-ticket-type">
-    ${ticketCategories.map(ticketCategory => 
-      `<option value="${ticketCategory.ticketCategoryID}">${ticketCategory.description}</option>`
-    ).join('')}
+    ${ticketCategories.map(ticketCategory =>
+    `<option value="${ticketCategory.ticketCategoryID}">${ticketCategory.description}</option>`
+  ).join('')}
   </select>
 `;
 
-actions.innerHTML = ticketTypeMarkup;
+  actions.innerHTML = ticketTypeMarkup;
 
-const quantity = document.createElement('div');
-quantity.classList.add(...quantityClasses);
+  const quantity = document.createElement('div');
+  quantity.classList.add(...quantityClasses);
 
-const input = document.createElement('input');
-input.classList.add(...inputClasses);
-input.type = 'number';
-input.min = '0';
-input.value = '0';
+  const input = document.createElement('input');
+  input.classList.add(...inputClasses);
+  input.type = 'number';
+  input.min = '0';
+  input.value = '0';
 
-input.addEventListener('blur', () => {
-  if(!input.value){
-    input.value = 0;
-  }
-  else{
+  input.addEventListener('blur', () => {
+    if (!input.value) {
+      input.value = 0;
+    }
+    else {
 
-  }
-});
+    }
+  });
 
-input.addEventListener('input', () => {
-  const currentQuantity = parseInt(input.value);
-  if(currentQuantity > 0){
-    addToCart.disabled = false;
-  }
-  else{
-    addToCart.disabled = true;
-  }
-});
+  input.addEventListener('input', () => {
+    const currentQuantity = parseInt(input.value);
+    if (currentQuantity > 0) {
+      addToCart.disabled = false;
+    }
+    else {
+      addToCart.disabled = true;
+    }
+  });
 
-quantity.appendChild(input);
+  quantity.appendChild(input);
 
-const quantityActions = document.createElement('div');
-quantityActions.classList.add(...quantityActionsClasses);
+  const quantityActions = document.createElement('div');
+  quantityActions.classList.add(...quantityActionsClasses);
 
-const increase = document.createElement('button');
-increase.classList.add(...increaseBtnClasses);
-increase.innerText = '+';
-increase.addEventListener('click', () => {
-  input.value = parseInt(input.value) + 1;
-  const currentQuantity = parseInt(input.value);
-  if(currentQuantity > 0){
-    addToCart.disabled = false;
-  }
-  else{
-    addToCart.disabled = true;
-  }
-});
+  const increase = document.createElement('button');
+  increase.classList.add(...increaseBtnClasses);
+  increase.innerText = '+';
+  increase.addEventListener('click', () => {
+    input.value = parseInt(input.value) + 1;
+    const currentQuantity = parseInt(input.value);
+    if (currentQuantity > 0) {
+      addToCart.disabled = false;
+    }
+    else {
+      addToCart.disabled = true;
+    }
+  });
 
-const decrease = document.createElement('button');
-decrease.classList.add(...decreaseBtnClasses);
-decrease.innerText = '-';
-decrease.addEventListener('click', () => {
-  input.value = parseInt(input.value) - 1;
-  const currentQuantity = parseInt(input.value);
-  if(currentQuantity > 0){
-    addToCart.disabled = false;
-  }
-  else{
-    addToCart.disabled = true;
-  }
-});
+  const decrease = document.createElement('button');
+  decrease.classList.add(...decreaseBtnClasses);
+  decrease.innerText = '-';
+  decrease.addEventListener('click', () => {
+    input.value = parseInt(input.value) - 1;
+    const currentQuantity = parseInt(input.value);
+    if (currentQuantity > 0) {
+      addToCart.disabled = false;
+    }
+    else {
+      addToCart.disabled = true;
+    }
+  });
 
-quantityActions.appendChild(increase);
-quantityActions.appendChild(decrease);
+  quantityActions.appendChild(increase);
+  quantityActions.appendChild(decrease);
 
-quantity.appendChild(quantityActions);
-actions.appendChild(quantity);
-eventDiv.appendChild(actions);
+  quantity.appendChild(quantityActions);
+  actions.appendChild(quantity);
+  eventDiv.appendChild(actions);
 
-//Create the event footer with "Add to cart" button
-const eventFooter = document.createElement('footer');
-const addToCart = document.createElement('button');
-addToCart.classList.add(...addToCartBtnClasses);
-addToCart.innerText = 'Add To Cart';
-addToCart.disabled = true;
+  //Create the event footer with "Add to cart" button
+  const eventFooter = document.createElement('footer');
+  const addToCart = document.createElement('button');
+  addToCart.classList.add(...addToCartBtnClasses);
+  addToCart.innerText = 'Add To Cart';
+  addToCart.disabled = true;
 
-addToCart.addEventListener('click', () => {
-  const eventID = eventData.eventID; // Use the event ID from eventData
-  console.log("eventID: ", eventID);
-  handleAddToCart(title, eventID, input, addToCart);
-});
+  addToCart.addEventListener('click', () => {
+    const eventID = eventData.eventID; // Use the event ID from eventData
+    console.log("eventID: ", eventID);
+    handleAddToCart(title, eventID, input, addToCart);
+  });
 
-eventFooter.appendChild(addToCart);
-eventDiv.appendChild(eventFooter);
+  eventFooter.appendChild(addToCart);
+  eventDiv.appendChild(eventFooter);
 
-return eventDiv;
+  return eventDiv;
 }
 
 
@@ -297,6 +296,7 @@ const handleAddToCart = (title, eventID, input, addToCart) => {
   const numberOfTickets = parseInt(input.value);
 
   if (numberOfTickets > 0) {
+    addLoader();
     const requestBody = {
       eventID: eventID,
       ticketCategoryID: ticketCategoryID,
@@ -310,20 +310,24 @@ const handleAddToCart = (title, eventID, input, addToCart) => {
       },
       body: JSON.stringify(requestBody),
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Something went wrong...');
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Order created successfully:', data);
-      input.value = 0;
-      addToCart.disabled = true;
-    })
-    .catch(error => {
-      console.error('Error creating order:', error);
-    });
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Something went wrong...');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Order created successfully:', data);
+        input.value = 0;
+        addToCart.disabled = true;
+        toastr.success('Order made successfully!');
+      })
+      .catch(error => {
+        console.error('Error creating order:', error);
+      })
+      .finally(() => {
+        removeLoader();
+      });
   } else {
     console.log('Number of tickets must be greater than 0.');
   }
