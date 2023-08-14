@@ -3,17 +3,6 @@ import { createOrderItem } from './src/components/createOrderItem';
 import { useStyle } from '/src/components/styles';
 import { kebabCase, addPurchase } from '/src/utils';
 import { addLoader, removeLoader } from './src/components/loader';
-const imgUrls = [
-  'https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?cs=srgb&dl=pexels-wendy-wei-1190298.jpg&fm=jpg',
-  'https://images.mlssoccer.com/image/private/t_q-best/prd-league/nkiijghg8wni2aodsyvb.jpg',
-  'https://images.ctfassets.net/8x8155mjsjdj/1af9dvSFEPGCzaKvs8XQ5O/a7d4adc8f9573183394ef2853afeb0b6/Copy_of_Red_Wine_Blog_Post_Header.png',
-  'https://images.theconversation.com/files/497498/original/file-20221128-24-3ldy04.jpg?ixlib=rb-1.1.0&rect=7%2C845%2C5071%2C2535&q=45&auto=format&w=1356&h=668&fit=crop',
-  'https://images.wsj.net/im-700005?width=1280&size=1.77777778',
-  'https://dcist.com/wp-content/uploads/sites/3/2022/05/0002_kittner-20150721-2-1500x1001.jpg',
-  'https://www.apollotheater.org/app/uploads/2021/11/ComedyClub.jpg',
-  'https://media.istockphoto.com/id/467634080/photo/basketball-game.jpg?s=612x612&w=0&k=20&c=8BGyRa8U4AXoqstjPXA5t8ukZs6EEUn0PhQsmKOh8Zw=',
-  ,
-];
 
 let events = [];
 let currentImgIndex = 0;
@@ -100,21 +89,20 @@ function setupFilterEvents() {
   nameFilterInput.addEventListener('keyup', liveSearch);
 }
 
-function applyFilter() {
+
+
+async function applyFilter() {
   const selectedVenue = document.querySelector('#venueFilter').value;
   const selectedEventType = document.querySelector('#eventTypeFilter').value;
-  const filterButton = document.querySelector('#filterButton');
-  filterButton.addEventListener('click', applyFilter);
 
-  const filteredEvents = events.filter((event) => {
-    return (
-      event.venue.location === selectedVenue &&
-      event.eventType.name === selectedEventType
-    );
-  });
-
+  const response = await fetch(
+    `http://localhost:8080/eventsByVenueLocationAndEventType?eventType=${encodeURIComponent(selectedEventType)}&venue=${encodeURIComponent(selectedVenue)}`
+  );
+  const filteredEvents = await response.json();
   addEvents(filteredEvents);
+
 }
+
 
 
 function populateFilters() {
@@ -123,18 +111,18 @@ function populateFilters() {
 
   const venueFilter = document.querySelector('#venueFilter');
   venues.forEach(venue => {
-      const option = document.createElement('option');
-      option.value = venue;
-      option.textContent = venue;
-      venueFilter.appendChild(option);
+    const option = document.createElement('option');
+    option.value = venue;
+    option.textContent = venue;
+    venueFilter.appendChild(option);
   });
 
   const eventTypeFilter = document.querySelector('#eventTypeFilter');
   eventTypes.forEach(eventType => {
-      const option = document.createElement('option');
-      option.value = eventType;
-      option.textContent = eventType;
-      eventTypeFilter.appendChild(option);
+    const option = document.createElement('option');
+    option.value = eventType;
+    option.textContent = eventType;
+    eventTypeFilter.appendChild(option);
   });
 }
 
@@ -177,6 +165,9 @@ function setupInitialPage() {
   renderContent(initialUrl);
 }
 
+
+
+
 async function renderHomePage() {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = getHomePageTemplate();
@@ -189,6 +180,9 @@ async function renderHomePage() {
     events = await fetchTicketEvents();
     populateFilters();
 
+
+    const filterButton = document.getElementById('filterButton');
+    filterButton.addEventListener('click', applyFilter);
     setTimeout(() => {
       removeLoader();
     }, 300);
@@ -204,6 +198,7 @@ async function fetchTicketEvents() {
   const response = await fetch('http://localhost:8080/getEvents');
   //const response = await fetch('https://localhost:7068/api/Event/GetAll');
   const data = await response.json();
+
   return data;
 }
 
@@ -233,8 +228,11 @@ const createEvent = (eventData) => {
 
 const createEventElement = (eventData, title) => {
   const { eventID, description, name, ticketCategories } = eventData;
-  const imgURL = imgUrls[currentImgIndex % imgUrls.length];
-  currentImgIndex++;
+  console.log('eventData:', eventData);
+  console.log('title:', title);
+  console.log('event name', name);
+  let imgURL = '';
+  console.log('ticketCategories:', ticketCategories);
   const eventDiv = document.createElement('div');
   const eventWrapperClasses = useStyle('eventWrapper');
   const actionsWrapperClasses = useStyle('actionsWrapper');
@@ -244,6 +242,25 @@ const createEventElement = (eventData, title) => {
   const increaseBtnClasses = useStyle('increaseBtn');
   const decreaseBtnClasses = useStyle('decreaseBtn');
   const addToCartBtnClasses = useStyle('addToCartBtn');
+
+
+    if (name === "Untold") {
+      imgURL = 'https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?cs=srgb&dl=pexels-wendy-wei-1190298.jpg&fm=jpg';
+    } else if (name === "Soccer game") {
+      imgURL = 'https://images.mlssoccer.com/image/private/t_q-best/prd-league/nkiijghg8wni2aodsyvb.jpg';
+    } else if (name === "Wine Festival"){
+      imgURL = 'https://images.ctfassets.net/8x8155mjsjdj/1af9dvSFEPGCzaKvs8XQ5O/a7d4adc8f9573183394ef2853afeb0b6/Copy_of_Red_Wine_Blog_Post_Header.png';
+    } else if (name === "Classical concert"){
+      imgURL = 'https://images.theconversation.com/files/497498/original/file-20221128-24-3ldy04.jpg?ixlib=rb-1.1.0&rect=7%2C845%2C5071%2C2535&q=45&auto=format&w=1356&h=668&fit=crop';
+    } else if (name === "Art exhibition"){
+      imgURL =   'https://images.wsj.net/im-700005?width=1280&size=1.77777778';
+    } else if (name === "Cinema in the park"){
+      imgURL =   'https://dcist.com/wp-content/uploads/sites/3/2022/05/0002_kittner-20150721-2-1500x1001.jpg';
+    } else if (name === "Stand-up Night"){
+      imgURL =   'https://www.apollotheater.org/app/uploads/2021/11/ComedyClub.jpg';
+    } else if (name === "Basketball Match"){
+      imgURL =   'https://media.istockphoto.com/id/467634080/photo/basketball-game.jpg?s=612x612&w=0&k=20&c=8BGyRa8U4AXoqstjPXA5t8ukZs6EEUn0PhQsmKOh8Zw=';
+    }
 
   //Set up event wrapper
   eventDiv.classList.add(...eventWrapperClasses);
@@ -264,22 +281,22 @@ const createEventElement = (eventData, title) => {
   const actions = document.createElement('div');
   actions.classList.add(...actionsWrapperClasses);
 
-  const categoriesOptions = ticketCategories.map(
-    (ticketCategory) =>
-      `<option value=${ticketCategory.id}>${ticketCategory.description}</option>`
-  );
+  // const categoriesOptions = ticketCategories.map(
+  //   (ticketCategory) =>
+  //     `<option value=${ticketCategory.id}>${ticketCategory.description}</option>`
+  // );
 
   const ticketTypeMarkup = `
-  <h2 class="ticket-type-text text-lg font-bold mb-2">Choose Ticket Type:</h2>
-  <select id="ticketType" name="ticketType" class="select ${title}-ticket-type">
-    ${ticketCategories
+    <h2 class="ticket-type-text text-lg font-bold mb-2">Choose Ticket Type:</h2>
+    <select id="ticketType" name="ticketType" class="select ${title}-ticket-type">
+      ${ticketCategories
       .map(
         (ticketCategory) =>
           `<option value="${ticketCategory.ticketCategoryID}">${ticketCategory.description}</option>`
       )
       .join('')}
-  </select>
-`;
+    </select>
+  `;
 
   actions.innerHTML = ticketTypeMarkup;
 
@@ -414,17 +431,22 @@ function renderOrdersPage(categories) {
   mainContentDiv.innerHTML = getOrdersPageTemplate();
 
   const purchasesContent = document.getElementById('purchases-content');
-  fetchOrders().then((orders) => {
-    if (orders.length) {
-      orders.forEach((order) => {
-        const ticketCategory = order.ticketCategory.ticketCategory; // Make sure you have access to the ticketCategory object here
-        const newOrder = createOrderItem(ticketCategory, order); // Pass ticketCategory as an argument
-        purchasesContent.appendChild(newOrder);
-      });
-    } else {
-      purchasesContent.innerHTML = 'No orders found.';
-    }
-  });
+  addLoader();
+  setTimeout(() => {
+    removeLoader();
+
+    fetchOrders().then((orders) => {
+      if (orders.length) {
+        orders.forEach((order) => {
+          const ticketCategory = order.ticketCategory.ticketCategory;
+          const newOrder = createOrderItem(ticketCategory, order);
+          purchasesContent.appendChild(newOrder);
+        });
+      } else {
+        purchasesContent.innerHTML = 'No orders found.';
+      }
+    });
+  }, 500);
 }
 
 // Render content based on URL
