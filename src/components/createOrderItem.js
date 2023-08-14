@@ -14,7 +14,7 @@ export const createOrderItem = (categories, order) => {
 
     // Create and append purchase title
     const purchaseTitle = createParagraph(...useStyle('purchaseTitle'));
-    purchaseTitle.innerText = kebabCase(order.ticketCategory.event.name ?? "Unknown event");
+    purchaseTitle.innerText = kebabCase(order.ticketCategory.event?.name ?? "Unknown event");
     purchase.appendChild(purchaseTitle);
 
     // Create and append purchase quantity
