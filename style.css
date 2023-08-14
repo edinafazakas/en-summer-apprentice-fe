@@ -215,7 +215,26 @@ h1 {
 
 
 
+.filter-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
 
+.filter-label {
+  font-weight: bold;
+  margin-right: 10px;
+  white-space: nowrap;
+}
+
+.filter-select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  width: 200px;
+  background-color: #fff;
+}
 
 .containerFiltered {
   display: flex;

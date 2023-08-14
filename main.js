@@ -18,22 +18,29 @@ function getHomePageTemplate() {
   return `
       <div id="content">
         <div class="header-image-container">
-        <img src="./src/assets/Liveevent-general.jpg" alt="Header Image" id="headerImage">
-        <input type="text" id="searchInput" placeholder="  Search events...">
-        <ul id="searchResults"></ul>
+          <img src="./src/assets/Liveevent-general.jpg" alt="Header Image" id="headerImage">
+          <input type="text" id="searchInput" placeholder="  Search events...">
+          <ul id="searchResults"></ul>
         </div>
-          <div class="containerFiltered">
-            <div id="filterContainer">
-                <select id="venueFilter">
+        <div class="containerFiltered">
+          <div id="filterContainer">
+            <div class="filter-group">
+              <label for="venueFilter" class="filter-label">Venue location:</label>
+              <select id="venueFilter" class="filter-select">
                 <!-- Options will be populated dynamically -->
-                </select>
-                <select id="eventTypeFilter">
-                <!-- Options will be populated dynamically -->
-                </select>
-                <button id="filterButton">Filter</button>
+              </select>
             </div>
+            <div class="filter-group">
+              <label for="eventTypeFilter" class="filter-label">Event type:</label>
+              <select id="eventTypeFilter" class="filter-select">
+                <!-- Options will be populated dynamically -->
+              </select>
+            </div>
+            <button id="filterButton" class="filter-button">Filter</button>
           </div>
+        </div>
         <div class="events flex items-center justify-center flex-wrap">
+        </div>
       </div>
     `;
 }
@@ -281,10 +288,10 @@ const createEventElement = (eventData, title) => {
   const actions = document.createElement('div');
   actions.classList.add(...actionsWrapperClasses);
 
-  // const categoriesOptions = ticketCategories.map(
-  //   (ticketCategory) =>
-  //     `<option value=${ticketCategory.id}>${ticketCategory.description}</option>`
-  // );
+  const categoriesOptions = ticketCategories.map(
+    (ticketCategory) =>
+      `<option value=${ticketCategory.id}>${ticketCategory.description}</option>`
+  );
 
   const ticketTypeMarkup = `
     <h2 class="ticket-type-text text-lg font-bold mb-2">Choose Ticket Type:</h2>
@@ -406,6 +413,7 @@ const handleAddToCart = (title, eventID, input, addToCart) => {
       .then((response) => {
         if (!response.ok) {
           throw new Error('Something went wrong...');
+          toastr.error('Can not place order', response);
         }
         return response.json();
       })
@@ -416,12 +424,14 @@ const handleAddToCart = (title, eventID, input, addToCart) => {
         toastr.success('Order made successfully!');
       })
       .catch((error) => {
+        toastr.error('Can not place order', response);
         console.error('Error creating order:', error);
       })
       .finally(() => {
         removeLoader();
       });
   } else {
+    toastr.error('Number of tickets must be greater than 0.', response);
     console.log('Number of tickets must be greater than 0.');
   }
 };
