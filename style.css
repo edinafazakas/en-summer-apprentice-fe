@@ -206,7 +206,8 @@ h1 {
 }
 
 #purchased-title{
-  margin-bottom: 100px;
+  margin-bottom: 50px;
+  margin-top: 20px;
 }
 
 #purchases{
@@ -279,4 +280,43 @@ select {
 
 #filterButton:hover {
   background-color: #0a427d;
+}
+
+#purchaseTypeWrapper {
+  width: '80px', 
+}
+
+.orderCardHeader {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background-color: #e5e7eb;
+  padding-left: 70px;
+  padding-right: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-weight: bold;
+  border-top: 1px solid #d1d5db;
+  border-bottom: 1px solid #d1d5db;
+  text-align: center;
+  align-items: center;
+  width: fit-content;
+}
+
+/* Styles for fieldLabel */
+.fieldLabel {
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  width: 140px;
+  padding-top: 10px; /* Adjust vertical padding as needed */
+  padding-bottom: 10px; /* Adjust vertical padding as needed */
+  padding-left: 20px; /* Adjust horizontal padding for space between labels */
+  padding-right: 10px; /* Adjust horizontal padding for space between labels */
+  margin-right: 45px; /* Add margin to the right for space between labels */
+}
+
+.order-cards-container {
+  margin: 6rem auto 50px; /* Adjust margin values as needed */
+  margin-top: 20px;
+  max-width: 1300px; /* Add a max-width for responsiveness */
 }

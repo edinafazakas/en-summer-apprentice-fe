@@ -1,8 +1,9 @@
 // import './src/mocks/handlers';
-import { createOrderItem } from './src/components/createOrderItem';
+//import { createOrderItem } from './src/components/createOrderItem';
 import { useStyle } from '/src/components/styles';
 import { kebabCase, addPurchase } from '/src/utils';
 import { addLoader, removeLoader } from './src/components/loader';
+import { createOrderCard } from './src/components/createOrderItem';
 
 let events = [];
 let currentImgIndex = 0;
@@ -45,37 +46,38 @@ function getHomePageTemplate() {
     `;
 }
 
-function getOrdersPageTemplate() {
+function getOrdersPageTemplate(orders) {
+  const containerDiv = document.createElement('div'); // Create a container div
+  containerDiv.classList.add('header-container'); // Assign a class to the container div
+  
+  const fieldNamesHeader = document.createElement('div');
+  fieldNamesHeader.classList.add('orderCardHeader'); // Add class directly
+  
+  const labels = ['Order ID', 'Event Name', 'Purchase Date', 'Purchase Type', 'Quantity', 'Total Price'];
+  labels.forEach(labelText => {
+    const label = document.createElement('div');
+    label.classList.add('fieldLabel', 'custom-label-spacing'); // Add the custom class here
+    label.textContent = labelText;
+    fieldNamesHeader.appendChild(label);
+  });
+  
+  containerDiv.appendChild(fieldNamesHeader); // Append the fieldNamesHeader to the container div
+  
   return `
-  <div id="content">
-      <h1 class="text-2xl mb-5 mt-8 text-center" id="purchased-title">Purchased Tickets</h1>
-      <div class="purchases m-6 mr-6" id="purchases">
-        <div class="bg-white px-4 py-3 gap-x-4 flex font-bold">
-          <div class="flex-1">
-            <span>Order ID</span>
-          </div>
-          <div class="flex-1">
-            <span>Name</span>
-          </div>
-          <div class="flex-1">
-            <span>Nr Tickets</span>
-          </div>
-          <div class="flex-1">
-            <span>Category</span>
-          </div>
-          <div class="flex-1 md:flex">
-            <span>Date</span>
-          </div>
-          <div>
-            <span>Price</span>
-          </div>
-          <div class="w-28 sm:w-8"></div>
-        </div>
-        <div id="purchases-content"></div>
+    <div id="content">
+      <h1 class="text-2xl text-center" id="purchased-title">My Orders</h1>
+      <div class="orderCardHeader">
+        ${fieldNamesHeader.outerHTML}
+      </div>
+      <div class="order-cards-container" id="order-cards-container">
+        ${orders.map((order) => createOrderCard(order, ticketCategories)).join('')}
       </div>
     </div>
   `;
 }
+
+
+
 
 function liveSearch() {
   const filterInput = document.querySelector('#searchInput');
@@ -187,7 +189,6 @@ async function renderHomePage() {
     events = await fetchTicketEvents();
     populateFilters();
 
-
     const filterButton = document.getElementById('filterButton');
     filterButton.addEventListener('click', applyFilter);
     setTimeout(() => {
@@ -214,6 +215,13 @@ async function fetchOrders() {
   const response = await fetch('http://localhost:8080/allOrders');
   const data = await response.json();
   return data;
+}
+
+async function fetchTicketCategories() {
+  const response = await fetch('http://localhost:8080/ticketCategories');
+  const data = await response.json();
+  const ticketCategories = data; 
+  return ticketCategories;// Assign the fetched data to the global variable
 }
 
 const addEvents = (events) => {
@@ -436,38 +444,49 @@ const handleAddToCart = (title, eventID, input, addToCart) => {
   }
 };
 
-function renderOrdersPage(categories) {
+async function renderOrdersPage(ticketCategories) {
   const mainContentDiv = document.querySelector('.main-content-component');
-  mainContentDiv.innerHTML = getOrdersPageTemplate();
+  mainContentDiv.innerHTML = getOrdersPageTemplate([]);
 
-  const purchasesContent = document.getElementById('purchases-content');
+  const purchasesContent = document.getElementById('order-cards-container');
   addLoader();
-  setTimeout(() => {
+
+  try {
+    const orders = await fetchOrders();
     removeLoader();
 
-    fetchOrders().then((orders) => {
-      if (orders.length) {
-        orders.forEach((order) => {
-          const ticketCategory = order.ticketCategory.ticketCategory;
-          const newOrder = createOrderItem(ticketCategory, order);
-          purchasesContent.appendChild(newOrder);
-        });
-      } else {
-        purchasesContent.innerHTML = 'No orders found.';
-      }
-    });
-  }, 500);
+    if (Array.isArray(orders)) {
+      orders.forEach((order) => {
+        const orderCard = createOrderCard(order, ticketCategories);
+        purchasesContent.appendChild(orderCard);
+      });
+    } else {
+      console.error('Invalid orders data:', orders);
+    }
+
+    if (orders.length === 0) {
+      purchasesContent.innerHTML = 'No orders found.';
+    }
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    purchasesContent.innerHTML = 'Error fetching orders.';
+  }
 }
 
+
+
+
+
 // Render content based on URL
-function renderContent(url) {
+async function renderContent(url) {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = '';
 
   if (url === '/') {
     renderHomePage();
   } else if (url === '/orders') {
-    renderOrdersPage();
+    const ticketCategories = await fetchTicketCategories();
+    renderOrdersPage(ticketCategories);
   }
 }
 

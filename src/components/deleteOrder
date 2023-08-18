@@ -1,0 +1,34 @@
+import { addLoader, removeLoader } from "./loader";
+
+export const deleteOrder = (orderID) => {
+    addLoader();
+    fetch(`http://localhost:8080/deleteOrder/${orderID}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then((resp) => {
+        if (resp.status === 204 || resp.status === 200) {
+            toastr.success('Order deleted succesfully!');
+            window.location.reload();
+            return Promise.resolve();
+        } else {
+            return resp.json();
+        }
+    })
+    .then(data => {
+        if (data) {
+            const purchaseToBeRemoved = document.getElementById(`purchase ${data}`);
+            purchaseToBeRemoved?.remove();
+            toastr.success('Successfully deleted!');
+            window.location.reload();
+        }
+    })
+    .catch((err) => {
+        toastr.error(err);
+    })
+    .finally(() => {
+        removeLoader();
+    });
+}
