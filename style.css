@@ -2,6 +2,8 @@ body {
   font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 0;
+  background-color: #f0f7fa; /* Light blue background color */
+  color: #333; /* Dark text color */
   box-sizing: border-box;
 }
 
@@ -60,9 +62,9 @@ h1 {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 580px;
-  max-height: 630px;
-  margin: 20px auto;
+  max-width: 530px;
+  max-height: 570px;
+  margin: 30px auto 30px;
   padding: 20px;
   border: 10px solid #a1c6e4;
   box-shadow: 0 0 2px 0 rgb(112, 171, 230), 0 12px 24px -4px rgb(126, 168, 209);
@@ -85,19 +87,19 @@ h1 {
 
 .description {
   color: #333;
+  margin-top: -30px;
   margin-bottom: 10px;
   font-weight: bold;
-  font-size: 19px;
+  font-size: 16px;
 }
 
 .ticket-type {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  margin-top: 10px;
 }
 
 .ticket-type label {
-  font-size: 15px;
   font-weight: bold;
   color: #333;
   margin-bottom: 20px;
@@ -113,20 +115,23 @@ h1 {
 }
 
 .ticket-type-text {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: bold;
+  height: 25px;
   color: #2253b5;
-  margin-bottom: 50px;
+  margin-top: -20px;
+  margin-bottom: 15px;
+  
 }
 
 .quantity {
-  display: flex;
-  align-items: center;
+  display:grid;
+  align-items:flex-start;
   justify-content: space-between;
 }
 
 .quantity-actions {
-  display: flex;
+  display: row;
   gap: 15px;
 }
 
@@ -135,7 +140,10 @@ h1 {
   width: 30px;
   text-align: center;
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: -25px;
+  margin-top: -80px;
+  margin-left: 10px;
+  height: 30px;
   color: white;
   border: none;
   cursor: pointer;
@@ -149,23 +157,32 @@ h1 {
 }
 
 .add-to-cart-btn {
-  align-self: center;
-  background: #270688;
+  display: inline-block;
+  background: linear-gradient(45deg, #270688, #4a07e0);
   color: white;
-  padding: 8px 50px;
+  padding: 10px 30px;
   border: none;
   border-radius: 5px;
   font-weight: bold;
-  margin-left: 170px;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 16px;
+  margin-left: 240px;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: -70px;
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .add-to-cart-btn:disabled {
-  background: rgba(34, 111, 188, 0.868);
+  background: rgba(34, 111, 188, 0.5);
   cursor: not-allowed;
 }
 
+.add-to-cart-btn:hover {
+  background: linear-gradient(45deg, #4a07e0, #270688);
+  transform: scale(1.05);
+}
 
 .main-content-component {
   margin-bottom: 40px;
@@ -178,6 +195,7 @@ h1 {
   width: 98.5vw; 
   border-radius: 10px;
   overflow: hidden;
+  background-color: #ffffff; 
   height: 500px; 
 }
 
@@ -185,13 +203,16 @@ h1 {
   width: 100%;
   align-items: center;
   justify-content: center;
-  height: 500px;
+  height: 480px;
+  margin-top: -30px;
   border-radius: 10px; 
 }
 
 #searchInput {
   width: 350px;
   position: absolute; 
+  background-color: #e6f4f8; 
+  border: 1px solid #b4d9e7; 
   top: 500px; 
   align-self: center;
   background-color: rgba(255, 255, 255, 0.8); 
@@ -213,7 +234,6 @@ h1 {
 #purchases{
   margin-bottom: 100px;
 }
-
 
 
 .filter-group {
@@ -242,7 +262,7 @@ h1 {
   justify-content: center;
   align-items: center;
   height: 150px;
-  margin-top: 10px;
+  margin-top: -25px;
   margin-bottom: 20px;
 }
 
@@ -259,6 +279,9 @@ h1 {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
+#purchased-title {
+  color: #1c76b1;
+}
 
 select {
   padding: 20px;
@@ -288,35 +311,84 @@ select {
 
 .orderCardHeader {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  background-color: #e5e7eb;
-  padding-left: 70px;
-  padding-right: 10px;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  grid-template-columns: repeat(6, 1fr);
+  padding-right: 50px;
   font-weight: bold;
-  border-top: 1px solid #d1d5db;
-  border-bottom: 1px solid #d1d5db;
-  text-align: center;
-  align-items: center;
-  width: fit-content;
+  height: 80px;
+  align-items: center; 
+  width: 1050px;
+  background-color: #81bbdd; 
+  margin: 0 auto; 
 }
 
-/* Styles for fieldLabel */
+
 .fieldLabel {
-  color: #4b5563;
+  color: #e5e9ef;
   display: flex;
-  align-items: center;
-  width: 140px;
-  padding-top: 10px; /* Adjust vertical padding as needed */
-  padding-bottom: 10px; /* Adjust vertical padding as needed */
-  padding-left: 20px; /* Adjust horizontal padding for space between labels */
-  padding-right: 10px; /* Adjust horizontal padding for space between labels */
-  margin-right: 45px; /* Add margin to the right for space between labels */
+  align-items: self-start;
+  padding-top: 10px; 
+  padding-bottom: 10px; 
+  padding-left: 10px;
+  padding-right: 70px;
 }
+
+.order-card {
+  background-color: #ffffff; 
+  border: 1px solid #b4d9e7; 
+}
+
 
 .order-cards-container {
-  margin: 6rem auto 50px; /* Adjust margin values as needed */
+  margin: 6rem auto 100px; 
   margin-top: 20px;
-  max-width: 1300px; /* Add a max-width for responsiveness */
+  background-color: #ffffff;
+  border: 1px solid #b4d9e7;
+  max-width: 1050px;
+}
+
+.orderCard {
+  background-color: #ffffff; 
+  border: 1px solid #b4d9e7; 
+}
+
+
+.orderCard {
+  background-color: rgb(187, 219, 230); /* Set the background color to light blue */
+  padding: 2rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  transition: box-shadow 0.3s;
+}
+
+.orderCard:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Styles for the order card content */
+.orderCardContent {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1rem;
+}
+
+.event-card-zoom-in {
+  transform: scale(1.1); /* Adjust the scale factor as needed */
+  transition: transform 0.2s ease-in-out; /* Add a smooth transition */
+}
+
+.event-card-centered {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 999; /* Ensure it's on top of other content */
+}
+
+/* CSS for zooming out */
+.event-card-zoom-out {
+  transform: scale(1); /* Back to the original size */
+  transition: transform 0.2s ease-in-out; /* Add a smooth transition */
 }

@@ -14,34 +14,37 @@ const bookOfStyles = {
     'font-medium',
     'text-sm',
     'text-gray-700',
-    'mt-2',
+    'mt-[16px]',
     'ml-[80px]',
-    'mr-[-150px]',
+    'mr-[-50px]',
     'flex-1',
   ],
 
   purchaseTitle: [
     'text-md',
+    'mt-[15px]',
     'font-medium',
     'text-gray-800',
     'left',
     'w-[150px]',
-    'mr-[300px]'
+    'ml-[-200px]'
   ],
   
   purchaseQuantity: [
     'w-[50px]',                    // Width when enabled
     'h-[28px]',                    // Height when enabled
     'text-sm',
-    'font-bold',
-    'enabled:ml-[-100px]',     
-    'disabled:ml-[-100px]' ,           // Add margin to the left
+    'font-bold',          // Add margin to the left
     'items-center',                // Center items vertically                  // Border when enabled
     'border-orange-700',           // Border color when enabled
     'text-orange-700',             // Text color when enabled
-    'disabled:ml-0',               // Remove margin when disabled
-    'disabled:border-none',  
-    'disabled:ml[-100px]' ,        // No border when disabled
+    'disabled:border-none', 
+    'enabled:ml-[0px]', 
+    'disabled:ml-[10px]' ,    
+    'enabled:mr-[100px]', 
+    'disabled:mr-[100px]' ,  
+    'enabled:mt-[10px]', 
+    'disabled:mt-[10px]' ,     // No border when disabled
     'disabled:text-gray-700',      // Text color when disabled
   ],
   
@@ -52,23 +55,26 @@ const bookOfStyles = {
     'flex-column',
     'justify-center',
     'flex-1',
-    'mr-[200px]', // Add margin to the left
-    'w-[150px]',
-    'ml-[0px]',
+    'w-[180px]',
+    'ml-[100px]',
+    'mr-[150px]',
     'text-center', // Center the text inside the select element
   ],
 
   purchaseDate: [
     'text-center',
     'flex-1',
+    'mt-[15px]',
   ],
 
   purchasePrice: [
     'text-center',
     'w-40',
     'hidden',
+    'mt-[13px]',
+    'flex-1',
     'md:flex',
-    'mr-[-200px]',                        // Add margin to the right
+    'ml-auto', // Move the price to the right
   ],
 
   actions: [
@@ -108,7 +114,7 @@ const bookOfStyles = {
 
   actionsWrapper: [
     'actions',
-    'flex',
+    'flex-1',
     'item-center',
     'mt-4',
   ],
@@ -123,8 +129,10 @@ const bookOfStyles = {
   input: [
     'input',
     'w-10',
+    'ml-[250px]',
     'text-center',
     'border',
+    'mt-[-127px]',
     'border-gray-300',
     'rounded',
     'py-1',
@@ -193,8 +201,6 @@ const bookOfStyles = {
     'mb-3',      // Reduced margin to make the cards smaller in height
     'flex',
     'flex-col',
-    'border',
-    'border-gray-300',
     'transition',
     'hover:shadow-lg',
   ],
@@ -204,7 +210,8 @@ const bookOfStyles = {
     'flex',          // Display content horizontally
     'flex-row',      // Display content in a column
     'w-1/11',        // Set the width to 100%
-    'space-x-8',     // Add vertical spacing between values
+    'space-x-8',
+    'bg-sky-50'     // Add vertical spacing between values
   ],
   
   infoValue: [

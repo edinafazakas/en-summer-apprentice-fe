@@ -276,10 +276,9 @@ const createEventElement = (eventData, title) => {
     } else if (name === "Basketball Match"){
       imgURL =   'https://media.istockphoto.com/id/467634080/photo/basketball-game.jpg?s=612x612&w=0&k=20&c=8BGyRa8U4AXoqstjPXA5t8ukZs6EEUn0PhQsmKOh8Zw=';
     }
-
   //Set up event wrapper
   eventDiv.classList.add(...eventWrapperClasses);
-
+  
   //Create the event content markup
   const contentMarkup = `
     <div class="content">
@@ -302,7 +301,7 @@ const createEventElement = (eventData, title) => {
   );
 
   const ticketTypeMarkup = `
-    <h2 class="ticket-type-text text-lg font-bold mb-2">Choose Ticket Type:</h2>
+    <h2 class="ticket-type-text text-lg font-bold ">Choose Ticket Type:</h2>
     <select id="ticketType" name="ticketType" class="select ${title}-ticket-type">
       ${ticketCategories
       .map(
@@ -386,9 +385,24 @@ const createEventElement = (eventData, title) => {
   addToCart.disabled = true;
 
   addToCart.addEventListener('click', () => {
-    const eventID = eventData.eventID; // Use the event ID from eventData
+    const eventID = eventData.eventID; 
     console.log('eventID: ', eventID);
     handleAddToCart(title, eventID, input, addToCart);
+  });
+
+  const imgElement = eventDiv.querySelector('.event-image'); 
+  let isZoomed = false; 
+  
+  imgElement.addEventListener('click', () => {
+    if (isZoomed) {
+      eventDiv.classList.remove('event-card-zoom-in');
+      eventDiv.classList.add('event-card-zoom-out');
+    } else {
+      eventDiv.classList.remove('event-card-zoom-out');
+      eventDiv.classList.add('event-card-zoom-in');
+    }
+  
+    isZoomed = !isZoomed; 
   });
 
   eventFooter.appendChild(addToCart);
@@ -396,6 +410,8 @@ const createEventElement = (eventData, title) => {
 
   return eventDiv;
 };
+
+
 
 const handleAddToCart = (title, eventID, input, addToCart) => {
   const ticketCategoryID = parseInt(
